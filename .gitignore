@@ -1,0 +1,13 @@
+*.user*
+*.70e188d
+*.cpp.orig
+*.h.orig
+*.txt.orig
+fusion-pos-ui.pro.user
+*.autosave
+build/
+.DS_Store
+deploy/
+.qmlls.ini
+build-android/
+build-windows/

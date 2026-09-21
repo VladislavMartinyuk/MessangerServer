@@ -1,0 +1,40 @@
+services:
+  mariadb:
+    image: mariadb:11
+    container_name: mariadb
+
+    ports:
+      - "3306:3306"
+
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: messenger
+      MARIADB_USER: user
+      MARIADB_PASSWORD: secret
+
+    volumes:
+      - mariadb_data:/var/lib/mysql
+
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 3s
+      timeout: 2s
+      retries: 5
+
+  flyway:
+    image: redgate/flyway
+    depends_on:
+      mariadb:
+        condition: service_healthy
+
+    volumes:
+      - ../migrations:/flyway/sql
+
+    command:
+      - -url=jdbc:mariadb://mariadb:3306/messenger
+      - -user=user
+      - -password=secret
+      - migrate
+
+volumes:
+  mariadb_data:
