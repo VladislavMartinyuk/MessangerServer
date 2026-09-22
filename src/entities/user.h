@@ -5,8 +5,6 @@
 
 class User {
 public:
-    User() = default;
-
     int id{0};
     std::string uuid;
     std::string login;

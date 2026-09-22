@@ -26,6 +26,9 @@ add_executable (MessengerServer
     src/repos/userrepo.h src/repos/userrepo.cpp
     src/shared/shared.h
     src/api/apimanager.h src/api/apimanager.cpp
+    src/api/v1/user/userhandler.h src/api/v1/user/userhandler.cpp
+    src/entities/chat.h
+    src/repos/chatrepo.h src/repos/chatrepo.cpp
 )
 
 target_link_libraries(MessengerServer PRIVATE

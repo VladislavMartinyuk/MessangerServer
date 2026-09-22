@@ -8,10 +8,10 @@ message RegisterRequest {
     string login = 1;
     string password = 2;
     string userName = 3;
-    string dateBirth = 4;
+    string date_birth = 4;
 }
 
 message RegisterResponse {
     bool result = 1;
-    string errorString = 2;
+    string error_string = 2;
 }

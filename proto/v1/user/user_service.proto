@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+service UserService {
+    rpc UserChatList(ChatListRequest) returns (ChatListResponse);
+}
+
+message UserChat {
+    int32 id = 1;
+    string uuid = 2;
+    string name = 3;
+    int32 type_id = 4;
+    string created_at = 5;
+    string updated_at = 6;
+    string deleted_at = 7;
+    string created_by = 8;
+}
+
+message ChatListRequest {
+    string user_uuid = 1;
+}
+
+message ChatListResponse {
+    bool result = 1;
+    string error_string = 2;
+    repeated UserChat chats = 3;
+}

@@ -46,12 +46,12 @@ api::v1::AuthUserHandler::Authorizate(grpc::CallbackServerContext *context,
                     response->set_result(true);
                 } else {
                     response->set_result(false);
-                    response->set_erorrstring("Пользователь не найден");
+                    response->set_erorr_string("Пользователь не найден");
                 }
 
                 Finish(grpc::Status::OK);
             } catch (const std::exception &e) {
-                response->set_erorrstring(e.what());
+                response->set_erorr_string(e.what());
                 Finish(grpc::Status(grpc::StatusCode::INTERNAL, e.what()));
             }
         }

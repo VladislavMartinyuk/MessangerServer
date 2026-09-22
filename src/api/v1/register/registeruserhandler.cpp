@@ -25,7 +25,7 @@ api::v1::RegisterUserHandler::Registerate(grpc::CallbackServerContext *context,
                            asyncRegisterUser(request->login(),
                                              request->password(),
                                              request->username(),
-                                             request->datebirth()),
+                                             request->date_birth()),
                            asio::detached);
         }
 
@@ -60,7 +60,7 @@ api::v1::RegisterUserHandler::Registerate(grpc::CallbackServerContext *context,
                 newUser.dateBirth = dateBirth;
                 if (co_await repo.containsUser(newUser)) {
                     response->set_result(false);
-                    response->set_errorstring("Такой пользователь уже зарегистрирован в системе");
+                    response->set_error_string("Такой пользователь уже зарегистрирован в системе");
                 } else {
                     co_await repo.insertNewUser(newUser);
                     response->set_result(true);
@@ -69,7 +69,7 @@ api::v1::RegisterUserHandler::Registerate(grpc::CallbackServerContext *context,
             } catch (const std::exception &e) {
                 spdlog::warn("Catch exception at rpc Registrate: {}", e.what());
                 response->set_result(false);
-                response->set_errorstring(e.what());
+                response->set_error_string(e.what());
                 Finish(grpc::Status(grpc::StatusCode::INTERNAL, "Database error"));
             }
         }

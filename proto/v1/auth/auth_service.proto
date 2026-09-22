@@ -12,5 +12,5 @@ message AuthRequest {
 
 message AuthResponse {
     bool result = 1;
-    string erorrString = 2;
+    string erorr_string = 2;
 }
