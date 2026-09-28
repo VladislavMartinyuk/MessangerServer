@@ -3,7 +3,9 @@
 api::ApiManager::ApiManager(const std::shared_ptr<asio::io_context> &ioc,
                             const AppServices &services)
     : m_v1_registerUserHandler(ioc, services)
-    , m_v1_authUserHandler(ioc, services) {}
+    , m_v1_authUserHandler(ioc, services)
+    , m_v1_userHandler(ioc, services)
+    , m_v1_chatHandler(ioc, services) {}
 
 void api::ApiManager::registerApiHandlers(grpc::ServerBuilder &builder,
                                           const ApiVersions &version) {
@@ -18,4 +20,6 @@ void api::ApiManager::registerApiHandlers(grpc::ServerBuilder &builder,
 void api::ApiManager::registerV1Handlers(grpc::ServerBuilder &builder) {
     builder.RegisterService(&m_v1_registerUserHandler);
     builder.RegisterService(&m_v1_authUserHandler);
+    builder.RegisterService(&m_v1_userHandler);
+    builder.RegisterService(&m_v1_chatHandler);
 }

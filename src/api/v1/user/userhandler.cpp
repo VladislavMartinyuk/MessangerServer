@@ -3,6 +3,7 @@
 #include <spdlog/spdlog.h>
 
 #include "repos/chatrepo.h"
+#include "repos/userrepo.h"
 
 api::v1::UserHandler::UserHandler(const std::shared_ptr<asio::io_context> &ioc,
                                   const AppServices &services)
@@ -64,4 +65,48 @@ grpc::ServerUnaryReactor *api::v1::UserHandler::UserChatList(grpc::CallbackServe
     };
 
     return new ChatListReactor(m_ioc, m_appServices, request, response);
+}
+
+grpc::ServerUnaryReactor *api::v1::UserHandler::FindUser(
+    grpc::CallbackServerContext *, const FindUserRequest *request,
+    FindUserResponse *response) {
+    class FindUserReactor final : public grpc::ServerUnaryReactor {
+    public:
+        FindUserReactor(const std::shared_ptr<asio::io_context> &ioc,
+                        const AppServices &services, std::string login,
+                        FindUserResponse *response)
+            : services(services), response(response) {
+            asio::co_spawn(*ioc, lookup(std::move(login)), asio::detached);
+        }
+
+    private:
+        const AppServices &services;
+        FindUserResponse *response;
+
+        void OnDone() override { delete this; }
+
+        asio::awaitable<void> lookup(std::string login) {
+            if (login.empty()) {
+                Finish(grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Login is required"));
+                co_return;
+            }
+            try {
+                UserRepo storage(services.dbService->dataBase("messenger"));
+                auto user = co_await storage.findByLogin(login);
+                if (!user) {
+                    Finish(grpc::Status(grpc::StatusCode::NOT_FOUND, "User not found"));
+                } else {
+                    response->set_user_uuid(user->uuid);
+                    response->set_login(user->login);
+                    response->set_name(user->name);
+                    Finish(grpc::Status::OK);
+                }
+            } catch (const std::exception &error) {
+                spdlog::warn("rpc FindUser exception: {}", error.what());
+                Finish(grpc::Status(grpc::StatusCode::INTERNAL, "Database error"));
+            }
+        }
+    };
+
+    return new FindUserReactor(m_ioc, m_appServices, request->login(), response);
 }

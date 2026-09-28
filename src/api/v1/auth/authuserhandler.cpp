@@ -44,6 +44,7 @@ api::v1::AuthUserHandler::Authorizate(grpc::CallbackServerContext *context,
                 auto containsUser = co_await repo.checkUserByLoginAndPass(login, password);
                 if (containsUser) {
                     response->set_result(true);
+                    response->set_user_uuid(*containsUser);
                 } else {
                     response->set_result(false);
                     response->set_erorr_string("Пользователь не найден");

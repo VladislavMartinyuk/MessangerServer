@@ -13,6 +13,9 @@ public:
     grpc::ServerUnaryReactor *UserChatList(grpc::CallbackServerContext *context,
                                            const ChatListRequest *request,
                                            ChatListResponse *response) override;
+    grpc::ServerUnaryReactor *FindUser(grpc::CallbackServerContext *context,
+                                      const FindUserRequest *request,
+                                      FindUserResponse *response) override;
 };
 
 } // namespace api::v1

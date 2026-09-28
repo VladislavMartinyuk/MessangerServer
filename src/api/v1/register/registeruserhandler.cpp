@@ -64,6 +64,7 @@ api::v1::RegisterUserHandler::Registerate(grpc::CallbackServerContext *context,
                 } else {
                     co_await repo.insertNewUser(newUser);
                     response->set_result(true);
+                    response->set_user_uuid(newUser.uuid);
                 }
                 Finish(grpc::Status::OK);
             } catch (const std::exception &e) {

@@ -2,6 +2,17 @@ syntax = "proto3";
 
 service UserService {
     rpc UserChatList(ChatListRequest) returns (ChatListResponse);
+    rpc FindUser(FindUserRequest) returns (FindUserResponse);
+}
+
+message FindUserRequest {
+    string login = 1;
+}
+
+message FindUserResponse {
+    string user_uuid = 1;
+    string login = 2;
+    string name = 3;
 }
 
 message UserChat {

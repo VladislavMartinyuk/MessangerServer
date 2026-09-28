@@ -1,6 +1,7 @@
 #include "appcore.h"
 
 #include <spdlog/spdlog.h>
+#include <chrono>
 
 AppCore::AppCore()
     : m_ioc(std::make_shared<asio::io_context>())
@@ -39,7 +40,8 @@ void AppCore::start(const api::ApiVersions &apiVersion) {
         if (ec) {
             return;
         }
-        m_grpcServer->Shutdown();
+        m_grpcServer->Shutdown(std::chrono::system_clock::now() +
+                               std::chrono::seconds(2));
         m_ioc->stop();
     });
 

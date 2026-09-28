@@ -13,4 +13,5 @@ message AuthRequest {
 message AuthResponse {
     bool result = 1;
     string erorr_string = 2;
+    string user_uuid = 3;
 }
